@@ -1,5 +1,7 @@
 # LogLens MCP
 
+**New here? Read [HOW_IT_WORKS.md](HOW_IT_WORKS.md) for the short explanation and exact commands.**
+
 LogLens is an evidence-first MCP server for the National AI Hackathon 2026 challenge
 **Making Sense of Logs: The Right Insights for the Right People**. It lets an AI agent ask
 bounded questions of BGL and OpenStack logs in SereneDB, then returns both the evidence and
@@ -172,8 +174,8 @@ aggregation dimensions without requiring a live database.
 
 ## Known limitations
 
-- The organizer-provided SereneDB instance, loader/schema, ownership table, and datasets were
-  absent from this workspace, so a live end-to-end query could not yet be recorded.
+- The local SereneDB contains the imported BGL and OpenStack corpora. The included ownership
+  mapping is a project mapping and should be replaced if the organizers provide an official one.
 - Nearby-event correlation is a transparent heuristic (same node, request, or component within
   30 minutes). Tune it after inspecting the supplied schema and real data.
 - Counts are log-row counts. Incident grouping needs an explicit, validated rule before the
