@@ -1,0 +1,20 @@
+[project]
+name = "loglens-mcp"
+version = "0.1.0"
+description = "Role-aware, evidence-first log analysis tools for SereneDB"
+requires-python = ">=3.11"
+dependencies = [
+  "mcp>=1.12,<2",
+  "psycopg[binary]>=3.2,<4",
+]
+
+[project.scripts]
+loglens-mcp = "loglens.server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/loglens"]
+
