@@ -18,11 +18,11 @@ request_id, event_template, message, anomaly_label, latency_ms, tenant_id, raw_l
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", choices=("bgl", "openstack"), required=True)
-    parser.add_argument("--file", type=Path, required=True)
+    parser.add_argument("--file", type=Path, action="append", required=True)
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
-    rows = read_rows(args.file, args.dataset)
+    rows = (row for path in args.file for row in read_rows(path, args.dataset))
     if args.dry_run:
         materialized = list(rows)
         print(f"validated {len(materialized)} {args.dataset} rows")
@@ -31,15 +31,17 @@ def main() -> None:
         return
 
     columns = BGL_COLUMNS if args.dataset == "bgl" else OPENSTACK_COLUMNS
-    placeholders = ", ".join(["%s"] * (11 if args.dataset == "bgl" else 13))
-    statement = f"INSERT INTO {args.dataset}_logs ({columns}) VALUES ({placeholders}) ON CONFLICT (event_id) DO NOTHING"
+    statement = f"COPY {args.dataset}_logs ({columns}) FROM STDIN"
     database = SereneDB(Settings.from_env().dsn)
     loaded = 0
     with database.connection() as connection, connection.cursor() as cursor:
-        for batch in batches(rows):
-            cursor.executemany(statement, batch)
-            loaded += len(batch)
-            print(f"processed {loaded} rows")
+        with cursor.copy(statement) as copy:
+            for batch in batches(rows):
+                for row in batch:
+                    copy.write_row(row)
+                loaded += len(batch)
+                if loaded % 100_000 == 0:
+                    print(f"processed {loaded} rows")
         connection.commit()
     print(f"loaded {loaded} {args.dataset} rows")
 

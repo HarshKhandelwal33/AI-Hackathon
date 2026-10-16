@@ -51,15 +51,18 @@ def summarize_logs(
     end: datetime | None = None,
     severity: str | None = None,
     component: str | None = None,
+    text: str | None = None,
     limit: int = 20,
 ) -> dict:
     """Calculate whole-scope counts by component, owner team, severity, or event template.
 
     Use this for team-lead recurrence analysis and manager prioritization. Counts are log
     rows and must not be described as incidents unless a separate incident rule is defined.
+    Set text to measure a full-text pattern over the selected scope rather than merely
+    counting the limited examples returned by search_logs.
     """
     return queries.summarize(
-        Filters(dataset, start, end, severity, component), group_by, limit
+        Filters(dataset, start, end, severity, component), group_by, limit, text
     ).to_dict()
 
 
@@ -71,10 +74,11 @@ def get_log_trend(
     end: datetime | None = None,
     severity: str | None = None,
     component: str | None = None,
+    text: str | None = None,
 ) -> dict:
     """Calculate a complete time series of matching log counts for recurrence and prioritization."""
     return queries.trend(
-        Filters(dataset, start, end, severity, component), bucket
+        Filters(dataset, start, end, severity, component), bucket, text
     ).to_dict()
 
 

@@ -131,11 +131,19 @@ ORDER BY timestamp, event_id
             caveats=["Context is correlated by node, request, or component within a 30-minute window."],
         )
 
-    def summarize(self, filters: Filters, group_by: GroupBy, limit: int = 20) -> Evidence:
+    def summarize(
+        self, filters: Filters, group_by: GroupBy, limit: int = 20, text: str | None = None
+    ) -> Evidence:
         limit = min(max(limit, 1), self.max_rows)
         clauses, parameters = _filters(filters)
+        if text is not None:
+            if not text.strip():
+                raise ValueError("text must not be empty")
+            clauses.insert(0, "l.message @@ websearch_to_tsquery(%s)")
+            parameters.insert(0, text)
         where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
         group = ALLOWED_GROUPS[group_by]
+        source = INDEXES[filters.dataset] if text is not None else TABLES[filters.dataset]
         parameters.append(limit + 1)
         query = f"""
 SELECT {group} AS group_value,
@@ -143,7 +151,7 @@ SELECT {group} AS group_value,
        COUNT(DISTINCT l.event_template) AS distinct_templates,
        MIN(l.timestamp) AS first_seen,
        MAX(l.timestamp) AS last_seen
-FROM {TABLES[filters.dataset]} l
+FROM {source} l
 LEFT JOIN component_ownership o
   ON o.dataset = l.dataset AND o.component = l.component
 {where}
@@ -155,7 +163,7 @@ LIMIT %s
         truncated = len(rows) > limit
         return Evidence(
             tool="summarize_logs",
-            scope=_scope(filters, group_by=group_by, requested_limit=limit),
+            scope=_scope(filters, group_by=group_by, text=text, requested_limit=limit),
             query=query,
             parameters=parameters,
             rows=rows[:limit],
@@ -164,15 +172,23 @@ LIMIT %s
             caveats=["Counts measure matching log rows, not necessarily distinct incidents."],
         )
 
-    def trend(self, filters: Filters, bucket: Bucket = "day") -> Evidence:
+    def trend(
+        self, filters: Filters, bucket: Bucket = "day", text: str | None = None
+    ) -> Evidence:
         clauses, parameters = _filters(filters)
+        if text is not None:
+            if not text.strip():
+                raise ValueError("text must not be empty")
+            clauses.insert(0, "l.message @@ websearch_to_tsquery(%s)")
+            parameters.insert(0, text)
         where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
+        source = INDEXES[filters.dataset] if text is not None else TABLES[filters.dataset]
         query = f"""
 SELECT date_trunc('{bucket}', l.timestamp) AS period_start,
        COUNT(*) AS log_count,
        COUNT(DISTINCT l.event_template) AS distinct_templates,
        COUNT(DISTINCT l.component) AS affected_components
-FROM {TABLES[filters.dataset]} l
+FROM {source} l
 {where}
 GROUP BY period_start
 ORDER BY period_start
@@ -180,7 +196,7 @@ ORDER BY period_start
         rows = self.database.fetch_all(query, parameters)
         return Evidence(
             tool="get_log_trend",
-            scope=_scope(filters, bucket=bucket),
+            scope=_scope(filters, bucket=bucket, text=text),
             query=query,
             parameters=parameters,
             rows=rows,

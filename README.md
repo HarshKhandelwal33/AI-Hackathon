@@ -26,32 +26,64 @@ The `analyze_logs` prompt teaches the agent to choose among five tools:
 
 - `search_logs`: bounded BM25 full-text search with dataset, time, severity, and component filters.
 - `get_nearby_events`: ordered context around a selected event, correlated by node, request, or component.
-- `summarize_logs`: full-scope counts by component, owner team, severity, or event template.
-- `get_log_trend`: complete hourly, daily, or weekly count series.
+- `summarize_logs`: full-scope counts by component, owner team, severity, or event template; an optional text query measures a searched pattern across the full scope.
+- `get_log_trend`: complete hourly, daily, or weekly count series, optionally filtered by the same full-text pattern.
 - `get_corpus_overview`: verifies coverage and row counts for both required datasets.
 
 Every response includes the SQL template, bound parameters, scope, rows, result count,
 truncation status, and caveats. SQL identifiers come from allowlists and user values are bound
 parameters.
 
+The real agent entry point is `agent.sh`. It sends the role and natural-language question to
+an OpenAI or Gemini model, dynamically discovers the five tools from the LogLens MCP server, executes
+the model-selected MCP calls against SereneDB, and returns the evidence-grounded answer.
+`run.sh` remains a deterministic offline demo and must not be presented as the AI agent.
+
 ## Setup
 
-The repository currently contains only the challenge PDF. Obtain the organizer-provided
-SereneDB connection details, loader/schema, and ownership mapping before the judged run.
-The included normalized schema is a working fallback if those files are unavailable.
+Obtain the organizer-provided SereneDB connection details, datasets, and ownership mapping
+before the judged run. This repository includes a normalized schema and loader; the sample
+ownership mapping is only a fallback and should be replaced or extended with the official one.
+
+### Local SereneDB
+
+For a local macOS demo, start the official image with a persistent volume. The port is bound
+only to loopback; `trust` authentication is appropriate only for local development:
+
+```bash
+docker run -d --platform linux/amd64 --name serenedb \
+  -p 127.0.0.1:7890:7890 \
+  -v serenedb-data:/var/lib/serenedb \
+  -e SERENEDB_HOST_AUTH_METHOD=trust \
+  serenedb/serenedb
+```
+
+The platform flag enables Docker's x86 emulation on Apple Silicon because the current
+official image does not publish an arm64 manifest. On Linux x86-64 it can be omitted. Use
+`docker stop serenedb` and `docker start serenedb` to stop and resume the database.
 
 1. Install Python 3.11+ and create an environment:
 
    ```bash
    python -m venv .venv
-   .venv\Scripts\activate
+   source .venv/bin/activate              # macOS/Linux
+   # .venv\Scripts\activate               # Windows
    pip install -e .
    ```
 
-2. Copy `.env.example` to `.env`, or set `SERENEDB_DSN` in the shell. SereneDB uses the
-   PostgreSQL wire protocol, normally on port `7890`.
+2. Copy `.env.example` to `.env`, or set `SERENEDB_DSN` in the shell. `.env` is loaded
+   automatically. SereneDB uses the PostgreSQL wire protocol, normally on port `7890`.
+   To run the actual AI agent, also set `OPENAI_API_KEY`; optionally change `OPENAI_MODEL`.
+   For Gemini instead, set `AI_PROVIDER=gemini`, `GEMINI_API_KEY`, and `GEMINI_MODEL`.
 
-3. Apply `sql/001_schema.sql`, then load the organizer's structured CSVs. The official
+3. Apply the schema and sample ownership mapping, then load the organizer's structured
+   CSVs:
+
+   ```bash
+   python scripts/setup_db.py
+   ```
+
+   The official
    2,000-line samples can be validated and loaded like this:
 
    ```bash
@@ -69,11 +101,52 @@ The included normalized schema is a working fallback if those files are unavaila
    loglens-mcp
    ```
 
-5. Configure an MCP client to run the command `loglens-mcp` with `SERENEDB_DSN` in its
-   environment. Select the `analyze_logs` prompt and provide `engineer`, `team_lead`, or
-   `manager` plus the question.
+   In another shell, verify MCP discovery without issuing a database query:
+
+   ```bash
+   source .venv/bin/activate
+   python scripts/smoke_mcp.py
+   ```
+
+5. Configure an MCP client with the absolute path to `.venv/bin/loglens-mcp` (or
+   `.venv\\Scripts\\loglens-mcp.exe` on Windows) and set its working directory to this
+   repository so `.env` is found. Select the `analyze_logs` prompt and provide `engineer`,
+   `team_lead`, or `manager` plus the question.
+
+## Tool inputs and outputs
+
+All tools return `scope`, executed `query`, bound `parameters`, `rows`, `result_count`,
+`truncated`, and `caveats`. Dataset is `bgl` or `openstack`; timestamps are ISO-8601 with
+an inclusive start and exclusive end. Search/summaries accept severity and component;
+summaries group by `component`, `team`, `severity`, or `event_template`; trends bucket by
+`hour`, `day`, or `week`. Limits are clamped to `LOGLENS_MAX_ROWS`.
 
 ## Suggested five-minute demo
+
+For an immediate terminal demo using fresh database queries:
+
+```bash
+./run.sh
+```
+
+For different questions, use the interactive query command:
+
+```bash
+./ask.sh engineer openstack "qemu-img Could not open"
+./ask.sh team_lead bgl "data TLB error interrupt" --severity FATAL
+./ask.sh manager openstack "No valid host"
+```
+
+Run the actual AI agent (the model chooses MCP tools):
+
+```bash
+./agent.sh engineer "Investigate the qemu-img missing disk failure in OpenStack"
+./agent.sh team_lead "Which fatal problem recurs most in BGL and who owns it?"
+./agent.sh manager "What should we prioritize across BGL and OpenStack?"
+```
+
+The terminal prints every model-selected tool call as `[agent] calling ...`, making the
+agent's tool choice visible during the demonstration.
 
 1. Call `get_corpus_overview` to prove that both datasets are loaded and state their date spans.
 2. Engineer: search a real error phrase, select one event, fetch nearby context, and label the
@@ -91,6 +164,7 @@ Run the query-layer tests after installing the package:
 
 ```bash
 python -m unittest discover -s tests -v
+python scripts/smoke_mcp.py
 ```
 
 The tests verify bounded results, parameter binding, time-window validation, and allowlisted
