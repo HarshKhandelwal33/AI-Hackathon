@@ -175,6 +175,8 @@ LIMIT %s
     def trend(
         self, filters: Filters, bucket: Bucket = "day", text: str | None = None
     ) -> Evidence:
+        if bucket not in ("hour", "day", "week"):
+            raise ValueError("bucket must be hour, day, or week")
         clauses, parameters = _filters(filters)
         if text is not None:
             if not text.strip():
@@ -192,16 +194,21 @@ FROM {source} l
 {where}
 GROUP BY period_start
 ORDER BY period_start
+LIMIT %s
 """.strip()
+        parameters.append(self.max_rows + 1)
         rows = self.database.fetch_all(query, parameters)
+        truncated = len(rows) > self.max_rows
         return Evidence(
             tool="get_log_trend",
             scope=_scope(filters, bucket=bucket, text=text),
             query=query,
             parameters=parameters,
-            rows=rows,
-            result_count=len(rows),
-            caveats=["Counts measure matching log rows, not necessarily distinct incidents."],
+            rows=rows[:self.max_rows],
+            result_count=min(len(rows), self.max_rows),
+            truncated=truncated,
+            caveats=["Counts measure matching log rows, not necessarily distinct incidents.",
+                     "Only nonempty buckets are returned. If truncated, narrow the time range or use a coarser bucket."],
         )
 
     def corpus_overview(self) -> Evidence:

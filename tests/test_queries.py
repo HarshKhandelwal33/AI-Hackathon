@@ -59,7 +59,7 @@ class QueryTests(unittest.TestCase):
             Filters("openstack"), "week", text="timeout"
         )
         self.assertIn("FROM openstack_logs_idx l", evidence.query)
-        self.assertEqual(["timeout"], evidence.parameters)
+        self.assertEqual(["timeout", 101], evidence.parameters)
 
     def test_parses_bgl_structured_row(self):
         parsed = parse_bgl({

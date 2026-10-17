@@ -189,3 +189,23 @@ aggregation dimensions without requiring a live database.
 - Loghub datasets: <https://github.com/logpai/loghub>
 - Zhu et al., *Loghub: A Large Collection of System Log Datasets for AI-driven Log Analytics*, ISSRE 2023.
 - Oliner & Stearley, *What Supercomputers Say: A Study of Five System Logs*, DSN 2007 (BGL).
+
+## Response quality improvements
+
+Tool results include stable evidence IDs for citations. The agent requests structured findings,
+evidence, hypotheses, next checks and scope; related searches are bounded to three phrases.
+Tool timings appear in the terminal. See [benchmarks/README.md](benchmarks/README.md) for
+the 15-question evaluation and ownership/template enrichment commands.
+
+## Token-efficient agent
+
+The agent requests five search examples and three nearby events on each side by default;
+explicit requested limits still work. Rows use a lossless columns/values representation.
+Full tool evidence, including executed SQL and parameters, is saved locally in ignored
+`.runs/*.json`; the model receives data, scope, caveats, truncation and evidence references.
+These files contain log evidence and accumulate until you remove them.
+Provider-reported token usage is printed per response when available.
+`LOGLENS_MAX_ROUNDS=6` is the default; use a value from 1 to 12 for deeper investigations.
+Reaching this cap reports an incomplete investigation rather than inventing an answer.
+Repeated calls are discouraged through instructions; they are not cached.
+Character savings are not an exact token or billing estimate.

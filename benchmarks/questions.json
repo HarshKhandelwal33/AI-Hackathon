@@ -1,0 +1,77 @@
+[
+  {
+    "id": "engineer-1",
+    "role": "engineer",
+    "question": "Investigate the qemu-img missing disk failure in OpenStack"
+  },
+  {
+    "id": "engineer-2",
+    "role": "engineer",
+    "question": "Investigate No valid host in OpenStack"
+  },
+  {
+    "id": "engineer-3",
+    "role": "engineer",
+    "question": "Explain a fatal data TLB error in BGL"
+  },
+  {
+    "id": "engineer-4",
+    "role": "engineer",
+    "question": "Find evidence for an OpenStack instance failure and build its timeline"
+  },
+  {
+    "id": "engineer-5",
+    "role": "engineer",
+    "question": "Investigate nonexistent_error_xyz; report insufficient evidence if absent"
+  },
+  {
+    "id": "team_lead-1",
+    "role": "team_lead",
+    "question": "Which BGL fatal patterns recur most?"
+  },
+  {
+    "id": "team_lead-2",
+    "role": "team_lead",
+    "question": "Which OpenStack components have most ERROR rows?"
+  },
+  {
+    "id": "team_lead-3",
+    "role": "team_lead",
+    "question": "Show the daily trend for No valid host in OpenStack"
+  },
+  {
+    "id": "team_lead-4",
+    "role": "team_lead",
+    "question": "Who owns recurring OpenStack failures? State unmapped ownership"
+  },
+  {
+    "id": "team_lead-5",
+    "role": "team_lead",
+    "question": "Compare the frequency of qemu-img failures across days"
+  },
+  {
+    "id": "manager-1",
+    "role": "manager",
+    "question": "What should we prioritize across both datasets?"
+  },
+  {
+    "id": "manager-2",
+    "role": "manager",
+    "question": "Which OpenStack components deserve attention based on error frequency?"
+  },
+  {
+    "id": "manager-3",
+    "role": "manager",
+    "question": "Summarize BGL fatal errors and their scope"
+  },
+  {
+    "id": "manager-4",
+    "role": "manager",
+    "question": "Is there evidence of customer impact? State what logs cannot establish"
+  },
+  {
+    "id": "manager-5",
+    "role": "manager",
+    "question": "Which ownership and template gaps limit our conclusions?"
+  }
+]

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
+import hashlib
+import json
 from datetime import datetime
 from typing import Any, Literal
 
@@ -35,5 +37,7 @@ class Evidence:
             item.isoformat() if isinstance(item, datetime) else item
             for item in value["parameters"]
         ]
+        canonical = json.dumps(value, default=str, sort_keys=True)
+        value["evidence_id"] = "E-" + hashlib.sha256(canonical.encode()).hexdigest()[:12]
         return value
 

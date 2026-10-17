@@ -25,24 +25,20 @@ The same agent supports three roles:
 
 ## Run it
 
-Open Terminal and enter:
+On this Windows machine, start Docker Desktop, then open a VS Code PowerShell terminal:
 
-```bash
-cd "/Users/prateek/Pratik /AI-Hackathon"
-source .venv/bin/activate
-docker start serenedb
-docker ps --filter name=serenedb
+```powershell
+cd D:\Hackathon\AI-Hackathon
+docker start logsense-serenedb
+.\.venv\Scripts\python.exe -m loglens.agent engineer "Investigate the qemu-img missing disk failure in OpenStack"
+.\.venv\Scripts\python.exe -m loglens.agent team_lead "Which fatal problem recurs most in BGL and who owns it?"
+.\.venv\Scripts\python.exe -m loglens.agent manager "What should we prioritize across BGL and OpenStack?"
 ```
 
-The Docker output should show `serenedb` with status `Up`.
-
-Then run one of these real AI-agent questions:
-
-```bash
-./agent.sh engineer "Investigate the qemu-img missing disk failure in OpenStack"
-./agent.sh team_lead "Which fatal problem recurs most in BGL and who owns it?"
-./agent.sh manager "What should we prioritize across BGL and OpenStack?"
-```
+These agent commands send the question and selected log evidence to the configured model provider.
+For a clean checkout, follow README.md to create the environment, install dependencies,
+configure the provided SereneDB connection, and load data. The container name above is
+specific to this machine. On macOS/Linux the included agent.sh wrapper is also available.
 
 You can replace the text inside quotes with your own question.
 
@@ -54,7 +50,7 @@ The `.env` file must contain:
 AI_PROVIDER=gemini
 GEMINI_API_KEY=your_key_here
 GEMINI_MODEL=gemini-3.8-flash
-SERENEDB_DSN=host=localhost port=7890 dbname=postgres user=postgres
+SERENEDB_DSN=host=127.0.0.1 port=7890 dbname=postgres user=postgres password=YOUR_DATABASE_PASSWORD
 ```
 
 Do not commit or share the `.env` file because it contains your API key.
@@ -114,11 +110,11 @@ python -m unittest discover -s tests -v
 Stop SereneDB when finished:
 
 ```bash
-docker stop serenedb
+docker stop logsense-serenedb
 ```
 
 Start it again later:
 
 ```bash
-docker start serenedb
+docker start logsense-serenedb
 ```

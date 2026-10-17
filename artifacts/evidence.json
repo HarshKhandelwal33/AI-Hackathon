@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-16T23:24:42.855402+02:00",
+  "generated_at": "2026-10-17T19:10:37.938552+02:00",
   "corpus_overview": {
     "tool": "get_corpus_overview",
     "scope": {
@@ -17,23 +17,24 @@
         "log_count": 4747963,
         "first_seen": "2005-06-03T15:42:50.363779",
         "last_seen": "2006-01-04T08:00:05.233639",
-        "components": 14,
-        "distinct_templates": 60157
+        "components": 10,
+        "distinct_templates": 0
       },
       {
         "dataset": "openstack",
         "log_count": 207820,
         "first_seen": "2017-05-14T19:39:01.445000",
         "last_seen": "2017-05-17T12:02:35.320000",
-        "components": 3,
-        "distinct_templates": 4582
+        "components": 12,
+        "distinct_templates": 0
       }
     ],
     "result_count": 2,
     "truncated": false,
     "caveats": [
       "This is a full-corpus row count for each dataset."
-    ]
+    ],
+    "evidence_id": "E-f75189e0488e"
   },
   "engineer_search": {
     "tool": "search_logs",
@@ -53,318 +54,243 @@
     ],
     "rows": [
       {
-        "event_id": "openstack-openstack_normal1-27201",
+        "event_id": "openstack_normal1.log:27201",
         "timestamp": "2017-05-16T03:19:45.356000",
         "dataset": "openstack",
-        "component": "nova-compute",
+        "component": "oslo_service.periodic_task",
         "severity": "ERROR",
         "node_id": null,
         "request_id": null,
-        "event_template": "Stderr: u\"qemu-img: Could not open '/var/lib/nova/instances/<UUID>/disk': Could not open '/var/lib/nova/instances/<UUID>/disk': No such file or directory\\n\"",
+        "event_template": null,
         "message": "Stderr: u\"qemu-img: Could not open '/var/lib/nova/instances/16797a0f-32fb-494c-8f36-38588148c35d/disk': Could not open '/var/lib/nova/instances/16797a0f-32fb-494c-8f36-38588148c35d/disk': No such file or directory\\n\"",
-        "relevance": 33.613
+        "relevance": 33.988
       },
       {
-        "event_id": "openstack-openstack_normal2-10164",
+        "event_id": "openstack_normal2.log:10164",
         "timestamp": "2017-05-16T16:30:35.360000",
         "dataset": "openstack",
-        "component": "nova-compute",
+        "component": "oslo_service.periodic_task",
         "severity": "ERROR",
         "node_id": null,
         "request_id": null,
-        "event_template": "Stderr: u\"qemu-img: Could not open '/var/lib/nova/instances/<UUID>/disk': Could not open '/var/lib/nova/instances/<UUID>/disk': No such file or directory\\n\"",
+        "event_template": null,
         "message": "Stderr: u\"qemu-img: Could not open '/var/lib/nova/instances/daf38630-e1ca-42b1-8b71-4df078076a47/disk': Could not open '/var/lib/nova/instances/daf38630-e1ca-42b1-8b71-4df078076a47/disk': No such file or directory\\n\"",
-        "relevance": 33.613
+        "relevance": 33.988
       },
       {
-        "event_id": "openstack-openstack_normal2-19736",
+        "event_id": "openstack_normal2.log:19736",
         "timestamp": "2017-05-16T17:41:20.577000",
         "dataset": "openstack",
-        "component": "nova-compute",
+        "component": "oslo_service.periodic_task",
         "severity": "ERROR",
         "node_id": null,
         "request_id": null,
-        "event_template": "Stderr: u\"qemu-img: Could not open '/var/lib/nova/instances/<UUID>/disk': Could not open '/var/lib/nova/instances/<UUID>/disk': No such file or directory\\n\"",
+        "event_template": null,
         "message": "Stderr: u\"qemu-img: Could not open '/var/lib/nova/instances/74e32610-53a0-4e61-9125-83f6edc60a90/disk': Could not open '/var/lib/nova/instances/74e32610-53a0-4e61-9125-83f6edc60a90/disk': No such file or directory\\n\"",
-        "relevance": 33.613
+        "relevance": 33.988
       },
       {
-        "event_id": "openstack-openstack_normal2-34831",
+        "event_id": "openstack_normal2.log:34831",
         "timestamp": "2017-05-16T19:33:00.935000",
         "dataset": "openstack",
-        "component": "nova-compute",
+        "component": "oslo_service.periodic_task",
         "severity": "ERROR",
         "node_id": null,
         "request_id": null,
-        "event_template": "Stderr: u\"qemu-img: Could not open '/var/lib/nova/instances/<UUID>/disk': Could not open '/var/lib/nova/instances/<UUID>/disk': No such file or directory\\n\"",
+        "event_template": null,
         "message": "Stderr: u\"qemu-img: Could not open '/var/lib/nova/instances/ac7c329c-1a20-4735-bf9a-b15102f1c44d/disk': Could not open '/var/lib/nova/instances/ac7c329c-1a20-4735-bf9a-b15102f1c44d/disk': No such file or directory\\n\"",
-        "relevance": 33.613
+        "relevance": 33.988
       },
       {
-        "event_id": "openstack-openstack_normal2-42749",
+        "event_id": "openstack_normal2.log:42749",
         "timestamp": "2017-05-16T20:31:45.820000",
         "dataset": "openstack",
-        "component": "nova-compute",
+        "component": "oslo_service.periodic_task",
         "severity": "ERROR",
         "node_id": null,
         "request_id": null,
-        "event_template": "Stderr: u\"qemu-img: Could not open '/var/lib/nova/instances/<UUID>/disk': Could not open '/var/lib/nova/instances/<UUID>/disk': No such file or directory\\n\"",
+        "event_template": null,
         "message": "Stderr: u\"qemu-img: Could not open '/var/lib/nova/instances/0c28eea9-14ec-4f20-ad24-1cf8a2c5975d/disk': Could not open '/var/lib/nova/instances/0c28eea9-14ec-4f20-ad24-1cf8a2c5975d/disk': No such file or directory\\n\"",
-        "relevance": 33.613
+        "relevance": 33.988
       },
       {
-        "event_id": "openstack-openstack_normal2-57038",
+        "event_id": "openstack_normal2.log:57038",
         "timestamp": "2017-05-16T22:16:50.825000",
         "dataset": "openstack",
-        "component": "nova-compute",
+        "component": "oslo_service.periodic_task",
         "severity": "ERROR",
         "node_id": null,
         "request_id": null,
-        "event_template": "Stderr: u\"qemu-img: Could not open '/var/lib/nova/instances/<UUID>/disk': Could not open '/var/lib/nova/instances/<UUID>/disk': No such file or directory\\n\"",
+        "event_template": null,
         "message": "Stderr: u\"qemu-img: Could not open '/var/lib/nova/instances/2a841e49-df08-45c9-b387-003e2e28fc0d/disk': Could not open '/var/lib/nova/instances/2a841e49-df08-45c9-b387-003e2e28fc0d/disk': No such file or directory\\n\"",
-        "relevance": 33.613
+        "relevance": 33.988
       },
       {
-        "event_id": "openstack-openstack_normal2-73111",
+        "event_id": "openstack_normal2.log:73111",
         "timestamp": "2017-05-17T00:15:06.352000",
         "dataset": "openstack",
-        "component": "nova-compute",
+        "component": "oslo_service.periodic_task",
         "severity": "ERROR",
         "node_id": null,
         "request_id": null,
-        "event_template": "Stderr: u\"qemu-img: Could not open '/var/lib/nova/instances/<UUID>/disk': Could not open '/var/lib/nova/instances/<UUID>/disk': No such file or directory\\n\"",
+        "event_template": null,
         "message": "Stderr: u\"qemu-img: Could not open '/var/lib/nova/instances/6fc3fd6d-f9fa-4daf-8199-70b455b4ac58/disk': Could not open '/var/lib/nova/instances/6fc3fd6d-f9fa-4daf-8199-70b455b4ac58/disk': No such file or directory\\n\"",
-        "relevance": 33.613
+        "relevance": 33.988
       },
       {
-        "event_id": "openstack-openstack_normal2-115135",
+        "event_id": "openstack_normal2.log:115135",
         "timestamp": "2017-05-17T05:24:15.342000",
         "dataset": "openstack",
-        "component": "nova-compute",
+        "component": "oslo_service.periodic_task",
         "severity": "ERROR",
         "node_id": null,
         "request_id": null,
-        "event_template": "Stderr: u\"qemu-img: Could not open '/var/lib/nova/instances/<UUID>/disk': Could not open '/var/lib/nova/instances/<UUID>/disk': No such file or directory\\n\"",
+        "event_template": null,
         "message": "Stderr: u\"qemu-img: Could not open '/var/lib/nova/instances/bd7d1a40-cf7c-4389-bad7-698bbe124454/disk': Could not open '/var/lib/nova/instances/bd7d1a40-cf7c-4389-bad7-698bbe124454/disk': No such file or directory\\n\"",
-        "relevance": 33.613
+        "relevance": 33.988
       }
     ],
     "result_count": 8,
     "truncated": false,
     "caveats": [
       "Search results are examples; use an aggregation to measure frequency."
-    ]
+    ],
+    "evidence_id": "E-912293ec0401"
   },
   "engineer_context": {
     "tool": "get_nearby_events",
     "scope": {
       "dataset": "openstack",
-      "event_id": "openstack-openstack_normal1-27201",
+      "event_id": "openstack_normal1.log:27201",
       "before": 8,
       "after": 8
     },
     "query": "WITH anchor AS (\n  SELECT timestamp, component, node_id, request_id\n  FROM openstack_logs\n  WHERE event_id = %s\n  LIMIT 1\n), context AS (\n  SELECT l.event_id, l.timestamp, l.dataset, l.component, l.severity,\n         l.node_id, l.request_id, l.event_template, l.message,\n         ROW_NUMBER() OVER (ORDER BY l.timestamp, l.event_id) AS position,\n         SUM(CASE WHEN l.event_id = %s THEN 1 ELSE 0 END)\n           OVER (ORDER BY l.timestamp, l.event_id) AS anchor_seen\n  FROM openstack_logs l, anchor a\n  WHERE (l.node_id = a.node_id OR l.request_id = a.request_id OR l.component = a.component)\n    AND l.timestamp BETWEEN a.timestamp - INTERVAL '30 minutes'\n                        AND a.timestamp + INTERVAL '30 minutes'\n), marked AS (\n  SELECT *, MAX(CASE WHEN event_id = %s THEN position END) OVER () AS anchor_position\n  FROM context\n)\nSELECT event_id, timestamp, dataset, component, severity, node_id, request_id,\n       event_template, message\nFROM marked\nWHERE position BETWEEN anchor_position - %s AND anchor_position + %s\nORDER BY timestamp, event_id",
     "parameters": [
-      "openstack-openstack_normal1-27201",
-      "openstack-openstack_normal1-27201",
-      "openstack-openstack_normal1-27201",
+      "openstack_normal1.log:27201",
+      "openstack_normal1.log:27201",
+      "openstack_normal1.log:27201",
       8,
       8
     ],
     "rows": [
       {
-        "event_id": "openstack-openstack_normal1-27193",
+        "event_id": "openstack_normal1.log:27193",
         "timestamp": "2017-05-16T03:19:45.356000",
         "dataset": "openstack",
-        "component": "nova-compute",
+        "component": "oslo_service.periodic_task",
         "severity": "ERROR",
         "node_id": null,
         "request_id": null,
-        "event_template": "  File \"/usr/lib/python2.<NUM>/dist-packages/nova/virt/libvirt/utils.py\", line <NUM>, in get_disk_backing_file",
-        "message": "  File \"/usr/lib/python2.7/dist-packages/nova/virt/libvirt/utils.py\", line 184, in get_disk_backing_file"
+        "event_template": null,
+        "message": "File \"/usr/lib/python2.7/dist-packages/nova/virt/libvirt/utils.py\", line 184, in get_disk_backing_file"
       },
       {
-        "event_id": "openstack-openstack_normal1-27194",
+        "event_id": "openstack_normal1.log:27194",
         "timestamp": "2017-05-16T03:19:45.356000",
         "dataset": "openstack",
-        "component": "nova-compute",
+        "component": "oslo_service.periodic_task",
         "severity": "ERROR",
         "node_id": null,
         "request_id": null,
-        "event_template": "    backing_file = images.qemu_img_info(path, format).backing_file",
-        "message": "    backing_file = images.qemu_img_info(path, format).backing_file"
+        "event_template": null,
+        "message": "backing_file = images.qemu_img_info(path, format).backing_file"
       },
       {
-        "event_id": "openstack-openstack_normal1-27195",
+        "event_id": "openstack_normal1.log:27195",
         "timestamp": "2017-05-16T03:19:45.356000",
         "dataset": "openstack",
-        "component": "nova-compute",
+        "component": "oslo_service.periodic_task",
         "severity": "ERROR",
         "node_id": null,
         "request_id": null,
-        "event_template": "  File \"/usr/lib/python2.<NUM>/dist-packages/nova/virt/images.py\", line <NUM>, in qemu_img_info",
-        "message": "  File \"/usr/lib/python2.7/dist-packages/nova/virt/images.py\", line 65, in qemu_img_info"
+        "event_template": null,
+        "message": "File \"/usr/lib/python2.7/dist-packages/nova/virt/images.py\", line 65, in qemu_img_info"
       },
       {
-        "event_id": "openstack-openstack_normal1-27196",
+        "event_id": "openstack_normal1.log:27196",
         "timestamp": "2017-05-16T03:19:45.356000",
         "dataset": "openstack",
-        "component": "nova-compute",
+        "component": "oslo_service.periodic_task",
         "severity": "ERROR",
         "node_id": null,
         "request_id": null,
-        "event_template": "    raise exception.InvalidDiskInfo(reason=msg)",
-        "message": "    raise exception.InvalidDiskInfo(reason=msg)"
+        "event_template": null,
+        "message": "raise exception.InvalidDiskInfo(reason=msg)"
       },
       {
-        "event_id": "openstack-openstack_normal1-27197",
+        "event_id": "openstack_normal1.log:27197",
         "timestamp": "2017-05-16T03:19:45.356000",
         "dataset": "openstack",
-        "component": "nova-compute",
+        "component": "oslo_service.periodic_task",
         "severity": "ERROR",
         "node_id": null,
         "request_id": null,
-        "event_template": "InvalidDiskInfo: Disk info file is invalid: qemu-img failed to execute on /var/lib/nova/instances/<UUID>/disk : Unexpected error while running command.",
+        "event_template": null,
         "message": "InvalidDiskInfo: Disk info file is invalid: qemu-img failed to execute on /var/lib/nova/instances/16797a0f-32fb-494c-8f36-38588148c35d/disk : Unexpected error while running command."
       },
       {
-        "event_id": "openstack-openstack_normal1-27198",
+        "event_id": "openstack_normal1.log:27198",
         "timestamp": "2017-05-16T03:19:45.356000",
         "dataset": "openstack",
-        "component": "nova-compute",
+        "component": "oslo_service.periodic_task",
         "severity": "ERROR",
         "node_id": null,
         "request_id": null,
-        "event_template": "Command: /usr/bin/python -m oslo_concurrency.prlimit --as=<NUM> --cpu=<NUM> -- env LC_ALL=C LANG=C qemu-img info /var/lib/nova/instances/<UUID>/disk",
+        "event_template": null,
         "message": "Command: /usr/bin/python -m oslo_concurrency.prlimit --as=1073741824 --cpu=2 -- env LC_ALL=C LANG=C qemu-img info /var/lib/nova/instances/16797a0f-32fb-494c-8f36-38588148c35d/disk"
       },
       {
-        "event_id": "openstack-openstack_normal1-27199",
+        "event_id": "openstack_normal1.log:27199",
         "timestamp": "2017-05-16T03:19:45.356000",
         "dataset": "openstack",
-        "component": "nova-compute",
+        "component": "oslo_service.periodic_task",
         "severity": "ERROR",
         "node_id": null,
         "request_id": null,
-        "event_template": "Exit code: <NUM>",
+        "event_template": null,
         "message": "Exit code: 1"
       },
       {
-        "event_id": "openstack-openstack_normal1-27200",
+        "event_id": "openstack_normal1.log:27200",
         "timestamp": "2017-05-16T03:19:45.356000",
         "dataset": "openstack",
-        "component": "nova-compute",
+        "component": "oslo_service.periodic_task",
         "severity": "ERROR",
         "node_id": null,
         "request_id": null,
-        "event_template": "Stdout: u''",
+        "event_template": null,
         "message": "Stdout: u''"
       },
       {
-        "event_id": "openstack-openstack_normal1-27201",
+        "event_id": "openstack_normal1.log:27201",
         "timestamp": "2017-05-16T03:19:45.356000",
         "dataset": "openstack",
-        "component": "nova-compute",
+        "component": "oslo_service.periodic_task",
         "severity": "ERROR",
         "node_id": null,
         "request_id": null,
-        "event_template": "Stderr: u\"qemu-img: Could not open '/var/lib/nova/instances/<UUID>/disk': Could not open '/var/lib/nova/instances/<UUID>/disk': No such file or directory\\n\"",
+        "event_template": null,
         "message": "Stderr: u\"qemu-img: Could not open '/var/lib/nova/instances/16797a0f-32fb-494c-8f36-38588148c35d/disk': Could not open '/var/lib/nova/instances/16797a0f-32fb-494c-8f36-38588148c35d/disk': No such file or directory\\n\""
       },
       {
-        "event_id": "openstack-openstack_normal1-27202",
+        "event_id": "openstack_normal1.log:27202",
         "timestamp": "2017-05-16T03:19:45.356000",
         "dataset": "openstack",
-        "component": "nova-compute",
+        "component": "oslo_service.periodic_task",
         "severity": "ERROR",
         "node_id": null,
         "request_id": null,
-        "event_template": "",
+        "event_template": null,
         "message": ""
-      },
-      {
-        "event_id": "openstack-openstack_normal1-27203",
-        "timestamp": "2017-05-16T03:19:45.456000",
-        "dataset": "openstack",
-        "component": "nova-compute",
-        "severity": "INFO",
-        "node_id": null,
-        "request_id": "req-49bcaa6b-c5ba-49ac-9bb8-d28d2fa9bbaf",
-        "event_template": "[instance: <UUID>] Took <NUM> seconds to destroy the instance on the hypervisor.",
-        "message": "[instance: 16797a0f-32fb-494c-8f36-38588148c35d] Took 1.05 seconds to destroy the instance on the hypervisor."
-      },
-      {
-        "event_id": "openstack-openstack_normal1-27205",
-        "timestamp": "2017-05-16T03:19:45.915000",
-        "dataset": "openstack",
-        "component": "nova-compute",
-        "severity": "INFO",
-        "node_id": null,
-        "request_id": "req-49bcaa6b-c5ba-49ac-9bb8-d28d2fa9bbaf",
-        "event_template": "[instance: <UUID>] Took <NUM> seconds to deallocate network for instance.",
-        "message": "[instance: 16797a0f-32fb-494c-8f36-38588148c35d] Took 0.46 seconds to deallocate network for instance."
-      },
-      {
-        "event_id": "openstack-openstack_normal1-27209",
-        "timestamp": "2017-05-16T03:19:50.384000",
-        "dataset": "openstack",
-        "component": "nova-compute",
-        "severity": "WARNING",
-        "node_id": null,
-        "request_id": "req-addc1839-2ed5-4778-b57e-5854eb7b8b09",
-        "event_template": "Unknown base file: /var/lib/nova/instances/_base/<HEX>",
-        "message": "Unknown base file: /var/lib/nova/instances/_base/a489c868f0c37da93b76227c91bb03908ac0e742"
-      },
-      {
-        "event_id": "openstack-openstack_normal1-27210",
-        "timestamp": "2017-05-16T03:19:50.385000",
-        "dataset": "openstack",
-        "component": "nova-compute",
-        "severity": "INFO",
-        "node_id": null,
-        "request_id": "req-addc1839-2ed5-4778-b57e-5854eb7b8b09",
-        "event_template": "Removable base files: /var/lib/nova/instances/_base/<HEX>",
-        "message": "Removable base files: /var/lib/nova/instances/_base/a489c868f0c37da93b76227c91bb03908ac0e742"
-      },
-      {
-        "event_id": "openstack-openstack_normal1-27211",
-        "timestamp": "2017-05-16T03:19:50.386000",
-        "dataset": "openstack",
-        "component": "nova-compute",
-        "severity": "INFO",
-        "node_id": null,
-        "request_id": "req-addc1839-2ed5-4778-b57e-5854eb7b8b09",
-        "event_template": "Removing base or swap file: /var/lib/nova/instances/_base/<HEX>",
-        "message": "Removing base or swap file: /var/lib/nova/instances/_base/a489c868f0c37da93b76227c91bb03908ac0e742"
-      },
-      {
-        "event_id": "openstack-openstack_normal1-27214",
-        "timestamp": "2017-05-16T03:19:57.722000",
-        "dataset": "openstack",
-        "component": "nova-compute",
-        "severity": "INFO",
-        "node_id": null,
-        "request_id": "req-9d223b6e-151f-40ad-81a7-043572ce267e",
-        "event_template": "[instance: <UUID>] Attempting claim: memory <NUM> MB, disk <NUM> GB, vcpus <NUM> CPU",
-        "message": "[instance: 95053c15-0ce9-4721-b2ac-940d61ec4a4f] Attempting claim: memory 2048 MB, disk 20 GB, vcpus 1 CPU"
-      },
-      {
-        "event_id": "openstack-openstack_normal1-27215",
-        "timestamp": "2017-05-16T03:19:57.723000",
-        "dataset": "openstack",
-        "component": "nova-compute",
-        "severity": "INFO",
-        "node_id": null,
-        "request_id": "req-9d223b6e-151f-40ad-81a7-043572ce267e",
-        "event_template": "[instance: <UUID>] Total memory: <NUM> MB, used: <NUM> MB",
-        "message": "[instance: 95053c15-0ce9-4721-b2ac-940d61ec4a4f] Total memory: 64172 MB, used: 512.00 MB"
       }
     ],
-    "result_count": 17,
+    "result_count": 10,
     "truncated": false,
     "caveats": [
       "Context is correlated by node, request, or component within a 30-minute window."
-    ]
+    ],
+    "evidence_id": "E-0f07fd5912f6"
   },
   "openstack_pattern_by_team": {
     "tool": "summarize_logs",
@@ -385,9 +311,9 @@
     ],
     "rows": [
       {
-        "group_value": "Compute Platform",
+        "group_value": "unmapped",
         "log_count": 8,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "first_seen": "2017-05-16T03:19:45.356000",
         "last_seen": "2017-05-17T05:24:15.342000"
       }
@@ -396,7 +322,8 @@
     "truncated": false,
     "caveats": [
       "Counts measure matching log rows, not necessarily distinct incidents."
-    ]
+    ],
+    "evidence_id": "E-cef46e3f2a82"
   },
   "openstack_pattern_hourly": {
     "tool": "get_log_trend",
@@ -417,49 +344,49 @@
       {
         "period_start": "2017-05-16T03:00:00",
         "log_count": 1,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "affected_components": 1
       },
       {
         "period_start": "2017-05-16T16:00:00",
         "log_count": 1,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "affected_components": 1
       },
       {
         "period_start": "2017-05-16T17:00:00",
         "log_count": 1,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "affected_components": 1
       },
       {
         "period_start": "2017-05-16T19:00:00",
         "log_count": 1,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "affected_components": 1
       },
       {
         "period_start": "2017-05-16T20:00:00",
         "log_count": 1,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "affected_components": 1
       },
       {
         "period_start": "2017-05-16T22:00:00",
         "log_count": 1,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "affected_components": 1
       },
       {
         "period_start": "2017-05-17T00:00:00",
         "log_count": 1,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "affected_components": 1
       },
       {
         "period_start": "2017-05-17T05:00:00",
         "log_count": 1,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "affected_components": 1
       }
     ],
@@ -467,7 +394,8 @@
     "truncated": false,
     "caveats": [
       "Counts measure matching log rows, not necessarily distinct incidents."
-    ]
+    ],
+    "evidence_id": "E-9e559555d2e0"
   },
   "openstack_severity": {
     "tool": "summarize_logs",
@@ -489,28 +417,28 @@
       {
         "group_value": "INFO",
         "log_count": 204506,
-        "distinct_templates": 4552,
+        "distinct_templates": 0,
         "first_seen": "2017-05-14T19:39:01.445000",
         "last_seen": "2017-05-17T12:02:35.320000"
       },
       {
         "group_value": "WARNING",
         "log_count": 3118,
-        "distinct_templates": 4,
+        "distinct_templates": 0,
         "first_seen": "2017-05-14T19:39:09.660000",
         "last_seen": "2017-05-17T06:25:03.045000"
       },
       {
         "group_value": "ERROR",
         "log_count": 194,
-        "distinct_templates": 25,
+        "distinct_templates": 0,
         "first_seen": "2017-05-16T03:19:45.356000",
         "last_seen": "2017-05-17T06:25:03.044000"
       },
       {
         "group_value": "CRITICAL",
         "log_count": 2,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "first_seen": "2017-05-16T06:25:02.869000",
         "last_seen": "2017-05-17T06:25:03.046000"
       }
@@ -519,7 +447,8 @@
     "truncated": false,
     "caveats": [
       "Counts measure matching log rows, not necessarily distinct incidents."
-    ]
+    ],
+    "evidence_id": "E-6d6aa2c09b9e"
   },
   "openstack_errors_by_team": {
     "tool": "summarize_logs",
@@ -540,25 +469,19 @@
     ],
     "rows": [
       {
-        "group_value": "Compute Platform",
-        "log_count": 192,
-        "distinct_templates": 24,
+        "group_value": "unmapped",
+        "log_count": 194,
+        "distinct_templates": 0,
         "first_seen": "2017-05-16T03:19:45.356000",
-        "last_seen": "2017-05-17T05:24:15.342000"
-      },
-      {
-        "group_value": "API Platform",
-        "log_count": 2,
-        "distinct_templates": 1,
-        "first_seen": "2017-05-16T06:25:02.867000",
         "last_seen": "2017-05-17T06:25:03.044000"
       }
     ],
-    "result_count": 2,
+    "result_count": 1,
     "truncated": false,
     "caveats": [
       "Counts measure matching log rows, not necessarily distinct incidents."
-    ]
+    ],
+    "evidence_id": "E-3649b40a5251"
   },
   "bgl_fatal_patterns": {
     "tool": "summarize_logs",
@@ -581,79 +504,80 @@
       {
         "group_value": "data TLB error interrupt",
         "log_count": 152734,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "first_seen": "2005-06-05T00:08:13.410695",
         "last_seen": "2005-11-28T10:01:47.587002"
       },
       {
         "group_value": "data storage interrupt",
         "log_count": 63491,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "first_seen": "2005-06-13T17:36:20.973743",
         "last_seen": "2005-11-22T14:52:43.442135"
       },
       {
         "group_value": "instruction address: 0x00004ed8",
         "log_count": 47104,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "first_seen": "2005-06-13T17:44:59.774915",
         "last_seen": "2005-06-14T10:19:51.680273"
       },
       {
-        "group_value": "ciod: Error reading message prefix on CioStream socket to <NUM>.<NUM>:<NUM>, Link has been severed",
-        "log_count": 26546,
-        "distinct_templates": 1,
-        "first_seen": "2005-11-17T05:33:24.623263",
-        "last_seen": "2006-01-03T11:56:38.877831"
-      },
-      {
         "group_value": "ciod: Error loading /bgl/apps/scaletest/performance/MINIBEN/mb_243_0810/allreduce.rts: invalid or missing program image, Exec format error",
         "log_count": 20480,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "first_seen": "2005-08-12T23:20:01.496813",
         "last_seen": "2005-08-12T23:58:41.334754"
       },
       {
-        "group_value": "rts: kernel terminated for reason <NUM>",
-        "log_count": 18587,
-        "distinct_templates": 1,
-        "first_seen": "2005-08-13T21:27:41.205332",
-        "last_seen": "2005-11-16T12:37:18.653547"
-      },
-      {
-        "group_value": "ciod: Error reading message prefix after LOAD_MESSAGE on CioStream socket to <NUM>.<NUM>:<NUM>: Link has been severed",
-        "log_count": 15273,
-        "distinct_templates": 1,
-        "first_seen": "2005-08-05T09:11:59.393092",
-        "last_seen": "2005-12-03T07:01:32.861607"
-      },
-      {
-        "group_value": "machine check: i-fetch......................<NUM>",
+        "group_value": "machine check: i-fetch......................0",
         "log_count": 14355,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "first_seen": "2005-06-14T09:40:41.626231",
         "last_seen": "2006-01-03T03:24:48.616402"
       },
       {
         "group_value": "exception syndrome register: 0x00800000",
         "log_count": 14341,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "first_seen": "2005-06-14T09:38:31.290820",
         "last_seen": "2005-11-17T21:55:38.811425"
       },
       {
         "group_value": "data address: 0x00000002",
         "log_count": 14336,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "first_seen": "2005-06-14T09:36:13.693486",
         "last_seen": "2005-06-14T10:22:11.977260"
+      },
+      {
+        "group_value": "program interrupt: illegal instruction......0",
+        "log_count": 10250,
+        "distinct_templates": 0,
+        "first_seen": "2005-06-14T09:42:53.625883",
+        "last_seen": "2005-11-22T14:52:44.474005"
+      },
+      {
+        "group_value": "rts: kernel terminated for reason 1001",
+        "log_count": 9915,
+        "distinct_templates": 0,
+        "first_seen": "2005-08-13T21:27:41.205332",
+        "last_seen": "2005-08-23T23:58:54.492735"
+      },
+      {
+        "group_value": "rts: kernel terminated for reason 1004",
+        "log_count": 7830,
+        "distinct_templates": 0,
+        "first_seen": "2005-08-13T21:27:44.900153",
+        "last_seen": "2005-11-16T12:37:18.653547"
       }
     ],
     "result_count": 10,
     "truncated": true,
     "caveats": [
       "Counts measure matching log rows, not necessarily distinct incidents."
-    ]
+    ],
+    "evidence_id": "E-f28d58af0a38"
   },
   "bgl_tlb_search": {
     "tool": "search_logs",
@@ -674,62 +598,62 @@
     ],
     "rows": [
       {
-        "event_id": "bgl-17742",
+        "event_id": "BGL.log:17742",
         "timestamp": "2005-06-05T00:08:13.410695",
         "dataset": "bgl",
         "component": "KERNEL",
         "severity": "FATAL",
         "node_id": "R20-M0-N2-C:J10-U11",
         "request_id": null,
-        "event_template": "data TLB error interrupt",
+        "event_template": null,
         "message": "data TLB error interrupt",
         "relevance": 8.284
       },
       {
-        "event_id": "bgl-17745",
+        "event_id": "BGL.log:17745",
         "timestamp": "2005-06-05T00:08:13.577322",
         "dataset": "bgl",
         "component": "KERNEL",
         "severity": "FATAL",
         "node_id": "R20-M0-N2-C:J14-U01",
         "request_id": null,
-        "event_template": "data TLB error interrupt",
+        "event_template": null,
         "message": "data TLB error interrupt",
         "relevance": 8.284
       },
       {
-        "event_id": "bgl-17758",
+        "event_id": "BGL.log:17758",
         "timestamp": "2005-06-05T00:08:13.959099",
         "dataset": "bgl",
         "component": "KERNEL",
         "severity": "FATAL",
         "node_id": "R20-M0-ND-C:J13-U11",
         "request_id": null,
-        "event_template": "data TLB error interrupt",
+        "event_template": null,
         "message": "data TLB error interrupt",
         "relevance": 8.284
       },
       {
-        "event_id": "bgl-17809",
+        "event_id": "BGL.log:17809",
         "timestamp": "2005-06-05T00:08:15.474037",
         "dataset": "bgl",
         "component": "KERNEL",
         "severity": "FATAL",
         "node_id": "R20-M0-N9-C:J14-U01",
         "request_id": null,
-        "event_template": "data TLB error interrupt",
+        "event_template": null,
         "message": "data TLB error interrupt",
         "relevance": 8.284
       },
       {
-        "event_id": "bgl-17855",
+        "event_id": "BGL.log:17855",
         "timestamp": "2005-06-05T00:08:16.806826",
         "dataset": "bgl",
         "component": "KERNEL",
         "severity": "FATAL",
         "node_id": "R20-M1-N2-C:J17-U11",
         "request_id": null,
-        "event_template": "data TLB error interrupt",
+        "event_template": null,
         "message": "data TLB error interrupt",
         "relevance": 8.284
       }
@@ -738,7 +662,8 @@
     "truncated": true,
     "caveats": [
       "Search results are examples; use an aggregation to measure frequency."
-    ]
+    ],
+    "evidence_id": "E-727973f02ae4"
   },
   "bgl_tlb_by_team": {
     "tool": "summarize_logs",
@@ -760,9 +685,9 @@
     ],
     "rows": [
       {
-        "group_value": "Compute Reliability",
+        "group_value": "unmapped",
         "log_count": 152734,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "first_seen": "2005-06-05T00:08:13.410695",
         "last_seen": "2005-11-28T10:01:47.587002"
       }
@@ -771,7 +696,8 @@
     "truncated": false,
     "caveats": [
       "Counts measure matching log rows, not necessarily distinct incidents."
-    ]
+    ],
+    "evidence_id": "E-3070110d9358"
   },
   "bgl_tlb_weekly": {
     "tool": "get_log_trend",
@@ -793,49 +719,49 @@
       {
         "period_start": "2005-05-30T00:00:00",
         "log_count": 477,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "affected_components": 1
       },
       {
         "period_start": "2005-06-06T00:00:00",
         "log_count": 152182,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "affected_components": 1
       },
       {
         "period_start": "2005-07-11T00:00:00",
         "log_count": 1,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "affected_components": 1
       },
       {
         "period_start": "2005-07-18T00:00:00",
         "log_count": 30,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "affected_components": 1
       },
       {
         "period_start": "2005-08-15T00:00:00",
         "log_count": 29,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "affected_components": 1
       },
       {
         "period_start": "2005-08-22T00:00:00",
         "log_count": 4,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "affected_components": 1
       },
       {
         "period_start": "2005-11-21T00:00:00",
         "log_count": 1,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "affected_components": 1
       },
       {
         "period_start": "2005-11-28T00:00:00",
         "log_count": 10,
-        "distinct_templates": 1,
+        "distinct_templates": 0,
         "affected_components": 1
       }
     ],
@@ -843,6 +769,7 @@
     "truncated": false,
     "caveats": [
       "Counts measure matching log rows, not necessarily distinct incidents."
-    ]
+    ],
+    "evidence_id": "E-8b828dcf3634"
   }
 }

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+import asyncio
 from typing import Literal
 
 from mcp.server.fastmcp import FastMCP
@@ -76,7 +77,7 @@ def get_log_trend(
     component: str | None = None,
     text: str | None = None,
 ) -> dict:
-    """Calculate a complete time series of matching log counts for recurrence and prioritization."""
+    """Calculate bounded nonempty time buckets for recurrence and prioritization; check truncation."""
     return queries.trend(
         Filters(dataset, start, end, severity, component), bucket, text
     ).to_dict()
@@ -119,6 +120,40 @@ def main() -> None:
     mcp.run(transport="stdio")
 
 
+
+
+
+
+@mcp.tool()
+def search_related_logs(dataset: Dataset, phrases: list[str], limit: int = 5,
+                        start: datetime | None = None, end: datetime | None = None) -> dict:
+    """Search up to three explicit related phrases with the same time scope.
+
+    Each result carries its own evidence reference. Overlapping hits must not be added
+    together to estimate frequency; use summarize_logs for a measured pattern count.
+    """
+    if not 1 <= len(phrases) <= 3 or any(not p.strip() for p in phrases):
+        raise ValueError("Provide one to three non-empty search phrases")
+    return {"results": [queries.search(Filters(dataset, start, end), phrase, limit).to_dict()
+                        for phrase in dict.fromkeys(phrases)],
+            "caveats": ["Search groups can overlap; results are examples, not frequency."]}
+
+@mcp.tool()
+async def investigate_error(dataset: Dataset, text: str, limit: int = 5,
+                            start: datetime | None = None, end: datetime | None = None) -> dict:
+    """Find error examples and context for the top ranked hit in one request.
+
+    Prefer this for engineer investigations to avoid another model round trip.
+    Context uses a separate 30-minute window around the selected event and can extend
+    beyond search time filters. Ranking is relevance, not proof of root cause.
+    """
+    search = await asyncio.to_thread(queries.search, Filters(dataset, start, end), text, min(max(limit, 1), 10))
+    result = {"search": search.to_dict()}
+    if search.rows:
+        nearby = await asyncio.to_thread(queries.nearby, dataset, search.rows[0]["event_id"], 3, 3)
+        result["context"] = nearby.to_dict()
+    return result
+
+
 if __name__ == "__main__":
     main()
-
