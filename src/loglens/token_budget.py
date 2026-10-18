@@ -39,6 +39,7 @@ def prepare_evidence(payload, directory):
         elif isinstance(value, list):
             for child in value:
                 remove_sql(child)
+    # The model needs rows and references; the audit file retains the executable SQL.
     remove_sql(compact)
     return {'evidence': compact, 'local_audit_file': str(directory / (reference + '.json'))}
 

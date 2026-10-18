@@ -76,11 +76,19 @@ WHERE {' AND '.join(clauses)}
 ORDER BY relevance DESC, l.timestamp
 LIMIT %s
 """.strip()
+        # Keep each executed search in the audit, including an empty first attempt.
+        attempts = []
         rows = self.database.fetch_all(query, parameters)
+        attempts.append({"method": "original_terms", "query": query, "parameters": list(parameters), "returned_rows": len(rows)})
+        if not rows:
+            fallback = query.replace("websearch_to_tsquery(%s)", "plainto_tsquery(%s)")
+            rows = self.database.fetch_all(fallback, parameters)
+            attempts.append({"method": "literal_all_terms", "query": fallback, "parameters": list(parameters), "returned_rows": len(rows)})
+            query = fallback
         truncated = len(rows) > limit
         return Evidence(
             tool="search_logs",
-            scope=_scope(filters, text=text, requested_limit=limit),
+            scope=_scope(filters, text=text, requested_limit=limit, search_attempts=attempts, search_method=attempts[-1]["method"]),
             query=query,
             parameters=parameters,
             rows=rows[:limit],
@@ -92,6 +100,7 @@ LIMIT %s
     def nearby(self, dataset: Dataset, event_id: str, before: int = 8, after: int = 8) -> Evidence:
         before = min(max(before, 0), 50)
         after = min(max(after, 0), 50)
+        # Pick one correlation key from the anchor; never merge unrelated component traffic.
         table = TABLES[dataset]
         query = f"""
 WITH anchor AS (
@@ -106,7 +115,7 @@ WITH anchor AS (
          SUM(CASE WHEN l.event_id = %s THEN 1 ELSE 0 END)
            OVER (ORDER BY l.timestamp, l.event_id) AS anchor_seen
   FROM {table} l, anchor a
-  WHERE (l.node_id = a.node_id OR l.request_id = a.request_id OR l.component = a.component)
+  WHERE (CASE WHEN NULLIF(TRIM(a.request_id), '') IS NOT NULL THEN l.request_id = a.request_id WHEN NULLIF(TRIM(a.node_id), '') IS NOT NULL THEN l.node_id = a.node_id WHEN NULLIF(TRIM(a.component), '') IS NOT NULL THEN l.component = a.component ELSE l.event_id = %s END)
     AND l.timestamp BETWEEN a.timestamp - INTERVAL '30 minutes'
                         AND a.timestamp + INTERVAL '30 minutes'
 ), marked AS (
@@ -119,20 +128,20 @@ FROM marked
 WHERE position BETWEEN anchor_position - %s AND anchor_position + %s
 ORDER BY timestamp, event_id
 """.strip()
-        parameters: list[Any] = [event_id, event_id, event_id, before, after]
+        parameters: list[Any] = [event_id, event_id, event_id, event_id, before, after]
         rows = self.database.fetch_all(query, parameters)
         return Evidence(
             tool="get_nearby_events",
-            scope={"dataset": dataset, "event_id": event_id, "before": before, "after": after},
+            scope={"dataset": dataset, "event_id": event_id, "before": before, "after": after, "window_minutes": 30, "correlation_method": next((k for k in ("request_id", "node_id", "component") if rows and str(next((r for r in rows if r.get("event_id") == event_id), {}).get(k) or "").strip()), "anchor_only")},
             query=query,
             parameters=parameters,
             rows=rows,
             result_count=len(rows),
-            caveats=["Context is correlated by node, request, or component within a 30-minute window."],
+            caveats=["Context prefers request ID, then node ID, then component; component correlation is weak. The inclusive 30-minute window may extend beyond search filters. Proximity does not establish causality."],
         )
 
     def summarize(
-        self, filters: Filters, group_by: GroupBy, limit: int = 20, text: str | None = None
+        self, filters: Filters, group_by: GroupBy, limit: int = 20, text: str | None = None, literal_terms: bool = False
     ) -> Evidence:
         limit = min(max(limit, 1), self.max_rows)
         clauses, parameters = _filters(filters)
@@ -159,11 +168,13 @@ GROUP BY {group}
 ORDER BY log_count DESC, group_value
 LIMIT %s
 """.strip()
+        if literal_terms:
+            query = query.replace("websearch_to_tsquery(%s)", "plainto_tsquery(%s)")
         rows = self.database.fetch_all(query, parameters)
         truncated = len(rows) > limit
         return Evidence(
             tool="summarize_logs",
-            scope=_scope(filters, group_by=group_by, text=text, requested_limit=limit),
+            scope=_scope(filters, group_by=group_by, text=text, requested_limit=limit, literal_terms=literal_terms),
             query=query,
             parameters=parameters,
             rows=rows[:limit],

@@ -11,6 +11,7 @@ import sys
 from typing import Any
 from time import perf_counter
 from pathlib import Path
+from .validation import annotate
 from .token_budget import compact_json, prepare_evidence, report_usage
 
 from dotenv import load_dotenv
@@ -30,7 +31,13 @@ search examples. Use get_corpus_overview for corpus-wide claims. State dataset, 
 filters, truncation, and unknowns. A log-row count is not automatically an incident count.
 Never invent root cause, financial loss, downtime, or customer impact. Cite tool names and
 key returned values in the answer. Keep the answer structured and demo-friendly.
-Minimize model round trips: request independent tools together in the same turn. Prefer investigate_error for an engineer question with a known dataset and error phrase;
+Minimize model round trips: request independent tools together in the same turn.
+Target two model calls total: choose a complete evidence batch on the first call,
+then answer from its results on the second. For leads, batch recurrence, trend, and
+ownership queries; for corpus-wide questions include get_corpus_overview in that batch.
+Only request another tool batch if the results are empty, a tool failed, or a specific
+missing fact is necessary to answer the question. Do not gather optional corroboration.
+Prefer investigate_error for an engineer question with a known dataset and error phrase;
 it returns search and context in one tool call. For an
 engineer, one search and one nearby-events call are normally enough; use aggregation only
 when the question asks how often. Do not repeatedly broaden an investigation after the
@@ -55,6 +62,37 @@ frequency and affected components, without inventing business impact.
 Before answering, check that numeric claims match tool results, citations exist, and
 hypotheses are explicitly labelled. If evidence is insufficient, say what is missing.
 """
+
+
+
+FINAL_INSTRUCTIONS = """
+This is the final response. Do not request tools. Answer using evidence already returned.
+If evidence is incomplete or tools failed, state the specific gap and a useful next check.
+Never invent missing facts or ask the user to increase the tool-round budget.
+"""
+
+
+def evidence_fallback(collected):
+    """Return a bounded evidence inventory if a provider fails to produce final prose."""
+    summaries = []
+    seen = set()
+    def visit(value):
+        if isinstance(value, dict):
+            eid = value.get("evidence_id")
+            if eid and eid not in seen:
+                seen.add(eid)
+                summaries.append(f"- {value.get('tool', 'Evidence')}: {value.get('result_count', 'unknown')} returned rows [{eid}]. Scope: {compact_json(value.get('scope', {}))}")
+            for child in value.values():
+                visit(child)
+        elif isinstance(value, list):
+            for child in value:
+                visit(child)
+    visit(collected)
+    return ("The model did not produce a final analysis. "
+            "Here is the retrieved evidence inventory; it is not a diagnosis.\n\n"
+            + ("\n".join(summaries[:12]) or "No usable evidence was returned.")
+            + "\n\nReturned rows are not incident counts or necessarily total matching log counts. "
+            "Next check: review the saved tool evidence and any retrieval errors before drawing conclusions.")
 
 
 def mcp_tools_for_openai(mcp_tools: list[Any]) -> list[dict[str, Any]]:
@@ -121,7 +159,7 @@ async def call_mcp(session: ClientSession, available: set[str], name: str, argum
 
 
 def max_rounds():
-    value = int(os.getenv("LOGLENS_MAX_ROUNDS", "6"))
+    value = int(os.getenv("LOGLENS_MAX_ROUNDS", "2"))
     if not 1 <= value <= 12:
         raise ValueError("LOGLENS_MAX_ROUNDS must be between 1 and 12")
     return value
@@ -148,17 +186,21 @@ async def run_gemini_agent(
     model = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
     tools = mcp_tools_for_chat(discovered)
     available = {tool.name for tool in discovered}
+    collected = []
     messages: list[Any] = [
         {"role": "system", "content": INSTRUCTIONS},
         {"role": "user", "content": f"Role: {role}\nQuestion: {question}"},
     ]
     for round_number in range(max_rounds() + 1):
+        if round_number == max_rounds():
+            messages.append({"role": "system", "content": FINAL_INSTRUCTIONS})
         for retry in range(6):
             try:
+                print(f"[agent] model call {round_number + 1} (attempt {retry + 1})", file=sys.stderr)
                 response = client.chat.completions.create(
                     model=model,
                     messages=messages,
-                    tools=tools,
+                    tools=[] if round_number == max_rounds() else tools,
                     tool_choice="none" if round_number == max_rounds() else ("required" if round_number == 0 else "auto"),
                 )
                 break
@@ -180,12 +222,13 @@ async def run_gemini_agent(
         message = response.choices[0].message
         messages.append(message.model_dump(exclude_none=True))
         if not message.tool_calls:
-            return message.content or ""
+            return annotate(message.content or evidence_fallback(collected), collected)
         if round_number == max_rounds():
             break
         results = await call_batch(session, available, [
             (call.function.name, call.function.arguments) for call in message.tool_calls
         ])
+        collected.extend(results)
         for call, result in zip(message.tool_calls, results):
             messages.append(
                 {
@@ -194,7 +237,7 @@ async def run_gemini_agent(
                     "content": compact_json(result),
                 }
             )
-    raise RuntimeError("Agent reached its tool-round budget; narrow the question or raise LOGLENS_MAX_ROUNDS")
+    return annotate(evidence_fallback(collected), collected)
 
 
 async def run_agent(role: str, question: str) -> str:
@@ -222,6 +265,7 @@ async def run_agent(role: str, question: str) -> str:
             available = {tool.name for tool in discovered}
             tools = mcp_tools_for_openai(discovered)
             client = OpenAI()
+            print("[agent] model call 1", file=sys.stderr)
             response = client.responses.create(
                 model=model,
                 instructions=INSTRUCTIONS,
@@ -230,17 +274,19 @@ async def run_agent(role: str, question: str) -> str:
                 tool_choice="required",
             )
 
+            collected = []
             for round_number in range(max_rounds() + 1):
                 report_usage(response)
                 calls = [item for item in response.output if item.type == "function_call"]
                 if not calls:
-                    return response.output_text
+                    return annotate(response.output_text or evidence_fallback(collected), collected)
                 if round_number == max_rounds():
                     break
                 outputs = []
                 results = await call_batch(session, available, [
                     (call.name, call.arguments) for call in calls
                 ])
+                collected.extend(results)
                 for call, result in zip(calls, results):
                     outputs.append(
                         {
@@ -249,15 +295,16 @@ async def run_agent(role: str, question: str) -> str:
                             "output": compact_json(result),
                         }
                     )
+                print(f"[agent] model call {round_number + 2}", file=sys.stderr)
                 response = client.responses.create(
                     model=model,
-                    instructions=INSTRUCTIONS,
+                    instructions=INSTRUCTIONS + (FINAL_INSTRUCTIONS if round_number == max_rounds() - 1 else ""),
                     previous_response_id=response.id,
                     input=outputs,
-                    tools=tools,
+                    tools=[] if round_number == max_rounds() - 1 else tools,
                     tool_choice="none" if round_number == max_rounds() - 1 else "auto",
                 )
-            raise RuntimeError("Agent reached its tool-round budget; narrow the question or raise LOGLENS_MAX_ROUNDS")
+            return annotate(evidence_fallback(collected), collected)
 
 
 def main() -> None:

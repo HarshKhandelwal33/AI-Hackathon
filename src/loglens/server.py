@@ -117,11 +117,10 @@ data establishes it. A count of log rows is not automatically a count of inciden
 
 
 def main() -> None:
-    mcp.run(transport="stdio")
-
-
-
-
+    try:
+        mcp.run(transport="stdio")
+    finally:
+        queries.database.close()
 
 
 @mcp.tool()
@@ -140,15 +139,19 @@ def search_related_logs(dataset: Dataset, phrases: list[str], limit: int = 5,
 
 @mcp.tool()
 async def investigate_error(dataset: Dataset, text: str, limit: int = 5,
-                            start: datetime | None = None, end: datetime | None = None) -> dict:
+                            start: datetime | None = None, end: datetime | None = None,
+                            component: str | None = None, severity: str | None = None) -> dict:
     """Find error examples and context for the top ranked hit in one request.
 
     Prefer this for engineer investigations to avoid another model round trip.
     Context uses a separate 30-minute window around the selected event and can extend
     beyond search time filters. Ranking is relevance, not proof of root cause.
     """
-    search = await asyncio.to_thread(queries.search, Filters(dataset, start, end), text, min(max(limit, 1), 10))
-    result = {"search": search.to_dict()}
+    filters = Filters(dataset, start, end, severity, component)
+    search = await asyncio.to_thread(queries.search, filters, text, min(max(limit, 1), 10))
+    counts = await asyncio.to_thread(queries.summarize, filters, "team", 20, text, search.scope["search_method"] == "literal_all_terms")
+    result = {"search": search.to_dict(), "counts_and_ownership": counts.to_dict(),
+              "caveats": ["Counts are matching log rows, not incidents. Unmapped ownership is unknown; grouped counts may be truncated."]}
     if search.rows:
         nearby = await asyncio.to_thread(queries.nearby, dataset, search.rows[0]["event_id"], 3, 3)
         result["context"] = nearby.to_dict()
